@@ -1,5 +1,6 @@
 import base64
 import time
+import urllib
 
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -94,7 +95,25 @@ def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
+def makeimage(prompt,name):
+    openModel = openAiModel()
+    response = openModel.images.generate(
 
+        model="dall-e-3",
+
+        prompt="a white siamese cat versus black dog",
+
+        size="1024x1024",
+
+        quality="standard",
+
+        n=1,
+
+    )
+    image_url = response.data[0].url
+    print(image_url)
+    imgName="img/"+name
+    urllib.request.urlretrieve(image_url,  imgName)
 
 
 

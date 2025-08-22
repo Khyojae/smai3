@@ -1,7 +1,9 @@
 import streamlit as st
 from PIL import Image
 
-from myLLM import save_uploadedfile, geminiModel, progressBar
+from myLLM import makeimage
+
+from myLLM import save_uploadedfile, geminiModel, progressBar, geminiTxt, makeMsg, openAiModelArg
 
 # Sidebar
 st.sidebar.markdown("Clicked Page 10")
@@ -13,7 +15,29 @@ st.sidebar.markdown("Clicked Page 10")
 
 
 # Page
-st.title("Page 10")
+st.title("Page 11")
+text = st.text_area(label="질문입력:",
+                    placeholder="질문을 입력 하세요")
+name = st.text_input(label="이미지 이름:",
+                    placeholder="이미지 이름을 입력 하세요")
+if st.button("SEND"):
+    if text and name:
+        #file = st.file_uploader("이미지를 선택", type=["ipg", "png", "jpeg"])
+        st.info(text)
 
 
+        my_bar = progressBar("Operation in progress. Please wait.")
+        makeimage(text,name)
+        my_bar.empty()
 
+        with open("img/" + name, "rb") as file:
+            st.download_button(
+                label="Download image",
+                data=file,
+                file_name="img/" + name,
+                mime="image/png",
+            )
+        img = Image.open("img/" + name)
+        st.image(img)
+    else:
+        st.info("다시 입력 하세요")
