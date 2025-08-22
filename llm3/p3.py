@@ -1,38 +1,28 @@
 import time
 
 import streamlit as st
-from myLLM import geminiModel, geminiTxt
+from myLLM import geminiTxt
+from myLLM import progressBar
 
-
-def test(prompt):
-    model = geminiModel()
-    response = model.generate_content(prompt)
-    print(response.text)
-
-#side bar
+# Sidebar
 st.sidebar.markdown("Clicked Page 3")
 
-#page
-st.markdown("Page 3 프로그램 작성기")
+# Page
+st.title("Page 3 프로그램 작성기")
 text = st.text_area(label="질문입력:",
                     placeholder="질문을 입력 하세요")
-selected_option =st.radio("옵션을 선택하시오:",["c++","python","java"],index=0)
+
+selected_option = st.radio("언어를 선택하세요", ("짜바", "파이썬", "씨쁠쁠"))
+
+
 if st.button("SEND"):
-    if text:
-        language_instruction=f"{selected_option}로 답변해줘."
-        full_prompt = language_instruction+text
-        # Progress Bar Start -----------------------------------------
-        progress_text = "Operation in progress. Please wait."
-        my_bar = st.progress(0, text=progress_text)
-        for percent_complete in range(100):
-            time.sleep(0.08)
-            my_bar.progress(percent_complete + 1, text=progress_text)
-        time.sleep(1)
-        # Progress Bar End -----------------------------------------
-        result = geminiTxt(full_prompt)
+    if text and selected_option:
+        st.write(f"선택된 옵션: {selected_option}")
+        st.info(text)
+        my_bar=progressBar("ㄱㄷ")
+        result=geminiTxt(f"{selected_option}으로 질문을 코딩해줘");
         my_bar.empty()
-        st.info(result)
+        st.code(result,language=selected_option)
+
     else:
-        st.info("질문을 입력 하세요")
-
-
+        st.info("쓰3")

@@ -1,12 +1,15 @@
-from openai import OpenAI
+import time
+
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
+#GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+
 
 def openAiModel():
     client = OpenAI(api_key=OPENAI_API_KEY)
