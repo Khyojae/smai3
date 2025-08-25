@@ -85,35 +85,56 @@ def makeAudio(text, name):
     response = model.audio.speech.create(
         model="tts-1",
         input=text,
+        #["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
         voice="alloy",
         response_format="mp3",
         speed=1.1,
     )
     response.stream_to_file("audio/"+name)
 
+
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
-def makeimage(prompt,name):
+def makeImage(prompt, name):
     openModel = openAiModel()
     response = openModel.images.generate(
-
         model="dall-e-3",
-
-        prompt="a white siamese cat versus black dog",
-
+        prompt=prompt,
         size="1024x1024",
-
         quality="standard",
-
         n=1,
-
     )
     image_url = response.data[0].url
     print(image_url)
-    imgName="img/"+name
+    imgName = "img/"+name
     urllib.request.urlretrieve(image_url,  imgName)
 
+def makeImages(prompt, name, num):
+    openModel = openAiModel()
+    response = openModel.images.generate(
+        model="dall-e-2",
+        prompt=prompt,
+        size="1024x1024",
+        n=num,
+    )
+    for n,data in enumerate(response.data):
+        print(n)
+        print(data.url)
+        imgname = f"img/{name.split('.')[0]}_{n}.png"
+        urllib.request.urlretrieve(data.url, imgname)
 
-
+def cloneImage(imgName, num):
+    openModel = openAiModel()
+    response = openModel.images.create_variation(
+        model="dall-e-2",
+        image=open("img/"+imgName, "rb"),
+        n=num,
+        size="1024x1024"
+    )
+    for n,data in enumerate(response.data):
+        print(n)
+        print(data.url)
+        name = f"img/{imgName.split('.')[0]}_clone_{n}.png"
+        urllib.request.urlretrieve(data.url, name)
